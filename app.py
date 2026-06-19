@@ -86,36 +86,31 @@ def forex_signal(pct_change_7d, pair):
 # ── Data Fetching ───────────────────────────────────────────────────────────
 
 def fetch_crypto():
-    """Fetch BTC, ETH, BNB, SOL via CoinCap API (free, no key, works from US servers)."""
-    coins = {
-        "bitcoin":      "BTC/USD",
-        "ethereum":     "ETH/USD",
-        "binance-coin": "BNB/USD",
-        "solana":       "SOL/USD",
-    }
+    """Fetch BTC, ETH, BNB, SOL via Yahoo Finance (free, no key, US-accessible)."""
+    symbols = ["BTC-USD", "ETH-USD", "BNB-USD", "SOL-USD"]
+    labels  = {"BTC-USD": "BTC/USD", "ETH-USD": "ETH/USD", "BNB-USD": "BNB/USD", "SOL-USD": "SOL/USD"}
     results = {}
+    headers = {"User-Agent": "Mozilla/5.0"}
 
-    end_ms   = int(datetime.now().timestamp() * 1000)
-    start_ms = int((datetime.now() - timedelta(days=15)).timestamp() * 1000)
-
-    for coin_id, label in coins.items():
+    for sym in symbols:
+        label = labels[sym]
         try:
-            # Current price + 24h change
             r = requests.get(
-                f"https://api.coincap.io/v2/assets/{coin_id}",
-                timeout=10
+                f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}?interval=1d&range=16d",
+                headers=headers,
+                timeout=15,
             ).json()
-            d          = r["data"]
-            price      = float(d["priceUsd"])
-            change_24h = round(float(d["changePercent24Hr"]), 2)
+            result = r.get("chart", {}).get("result", [None])[0]
+            if not result:
+                raise ValueError("no result")
 
-            # 15-day daily closes
-            h = requests.get(
-                f"https://api.coincap.io/v2/assets/{coin_id}/history"
-                f"?interval=d1&start={start_ms}&end={end_ms}",
-                timeout=10
-            ).json()
-            closes = [float(p["priceUsd"]) for p in h.get("data", [])]
+            meta       = result.get("meta", {})
+            price      = float(meta.get("regularMarketPrice", 0))
+            prev       = float(meta.get("chartPreviousClose", price) or price)
+            change_24h = round((price - prev) / prev * 100, 2) if prev else 0
+
+            raw_closes = result.get("indicators", {}).get("quote", [{}])[0].get("close", [])
+            closes     = [float(c) for c in raw_closes if c is not None]
 
             signal, reason, confidence, color = crypto_signal(closes, price, change_24h)
 
