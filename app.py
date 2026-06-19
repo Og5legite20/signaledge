@@ -236,6 +236,11 @@ def index():
     return render_template("index.html", crypto=crypto, forex=forex, updated=updated)
 
 
+@app.route("/ads.txt")
+def ads_txt():
+    return "google.com, pub-7621852470505552, DIRECT, f08c47fec0942fa0\n", 200, {"Content-Type": "text/plain"}
+
+
 @app.route("/privacy")
 def privacy():
     return render_template("privacy.html")
