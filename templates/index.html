@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalEdge — Live Crypto & Forex Signals</title>
+    <meta name="description" content="Free live crypto and forex trading signals. BTC, ETH, EUR/USD, GBP/USD, USD/NGN. Updated every 5 minutes.">
+
+    <!-- ═══ Google AdSense (paste your code here after approval) ═══
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    ════════════════════════════════════════════════════════════════ -->
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg:        #080c18;
+            --surface:   #0f1526;
+            --border:    #1a2540;
+            --text:      #dde4f0;
+            --muted:     #4a5878;
+            --accent:    #3b82f6;
+            --green:     #22c55e;
+            --green-bg:  #052010;
+            --red:       #ef4444;
+            --red-bg:    #200505;
+            --gray:      #64748b;
+            --gray-bg:   #111827;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        /* ── Header ── */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+        .logo-signal { color: #fff; }
+        .logo-edge   { color: var(--accent); }
+        .tagline     { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+        .live-dot {
+            display: inline-block;
+            width: 7px; height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.3; }
+        }
+        .updated { font-size: 0.72rem; color: var(--muted); text-align: right; }
+
+        /* ── Layout ── */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+        }
+
+        /* ── Ad Slot ── */
+        .ad-slot {
+            background: var(--surface);
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-size: 0.72rem;
+            margin: 20px 0;
+        }
+
+        /* ── Section header ── */
+        .section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 28px 0 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* ── Signal Cards ── */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 14px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 20px;
+            transition: transform 0.15s, border-color 0.15s;
+            cursor: default;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #2a3a60;
+        }
+        .card.green { border-left: 3px solid var(--green); }
+        .card.red   { border-left: 3px solid var(--red);   }
+        .card.gray  { border-left: 3px solid #2a3550;      }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .pair { font-size: 1rem; font-weight: 700; color: #f1f5f9; }
+        .price {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-top: 3px;
+            font-variant-numeric: tabular-nums;
+        }
+        .change {
+            font-size: 0.72rem;
+            margin-top: 2px;
+            font-weight: 600;
+        }
+        .change.up   { color: var(--green); }
+        .change.down { color: var(--red);   }
+        .change.flat { color: var(--muted); }
+
+        /* Badge */
+        .badge {
+            padding: 5px 11px;
+            border-radius: 8px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .badge.green { background: var(--green-bg); color: var(--green); }
+        .badge.red   { background: var(--red-bg);   color: var(--red);   }
+        .badge.gray  { background: var(--gray-bg);  color: var(--gray);  }
+
+        /* Reason */
+        .reason {
+            font-size: 0.76rem;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        /* Confidence bar */
+        .bar-track {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.8s ease;
+        }
+        .bar-fill.green { background: var(--green); }
+        .bar-fill.red   { background: var(--red);   }
+        .bar-fill.gray  { background: #334155;      }
+        .bar-label {
+            font-size: 0.65rem;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        /* ── Disclaimer ── */
+        .disclaimer {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-size: 0.72rem;
+            color: #3d4f70;
+            margin-top: 32px;
+            line-height: 1.7;
+        }
+        .disclaimer strong { color: #4a5878; }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.7rem;
+            color: #1e2a45;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 520px) {
+            .grid { grid-template-columns: 1fr; }
+            header { flex-direction: column; align-items: flex-start; gap: 6px; }
+            .updated { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+    <div>
+        <div class="logo">
+            <span class="logo-signal">Signal</span><span class="logo-edge">Edge</span>
+        </div>
+        <div class="tagline">Live Crypto &amp; Forex Trading Signals — Free</div>
+    </div>
+    <div class="updated">
+        <span class="live-dot"></span>
+        Last updated<br>{{ updated }}
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- Ad Slot Top -->
+    <div class="ad-slot">Advertisement</div>
+
+    <!-- ═══ CRYPTO SIGNALS ═══ -->
+    <div class="section-label">Cryptocurrency Signals</div>
+    <div class="grid">
+        {% for pair, d in crypto.items() %}
+        <div class="card {{ d.color }}">
+            <div class="card-header">
+                <div>
+                    <div class="pair">{{ pair }}</div>
+                    <div class="price">{{ d.price }}</div>
+                    <div class="change {{ 'up' if d.change_24h > 0 else ('down' if d.change_24h < 0 else 'flat') }}">
+                        {{ '+' if d.change_24h > 0 else '' }}{{ d.change_24h }}% &nbsp;24h
+                    </div>
+                </div>
+                <div class="badge {{ d.color }}">{{ d.signal }}</div>
+            </div>
+            <div class="reason">{{ d.reason }}</div>
+            <div class="bar-track">
+                <div class="bar-fill {{ d.color }}" style="width: {{ d.confidence }}%"></div>
+            </div>
+            <div class="bar-label">Confidence: {{ d.confidence }}%</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Ad Slot Middle -->
+    <div class="ad-slot">Advertisement</div>
+
+    <!-- ═══ FOREX SIGNALS ═══ -->
+    <div class="section-label">Forex Signals</div>
+    <div class="grid">
+        {% for pair, d in forex.items() %}
+        <div class="card {{ d.color }}">
+            <div class="card-header">
+                <div>
+                    <div class="pair">{{ pair }}</div>
+                    <div class="price">{{ d.price }}</div>
+                    <div class="change {{ 'up' if d.change_7d > 0 else ('down' if d.change_7d < 0 else 'flat') }}">
+                        {{ '+' if d.change_7d > 0 else '' }}{{ d.change_7d }}% &nbsp;7d
+                    </div>
+                </div>
+                <div class="badge {{ d.color }}">{{ d.signal }}</div>
+            </div>
+            <div class="reason">{{ d.reason }}</div>
+            <div class="bar-track">
+                <div class="bar-fill {{ d.color }}" style="width: {{ d.confidence }}%"></div>
+            </div>
+            <div class="bar-label">Confidence: {{ d.confidence }}%</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Ad Slot Bottom -->
+    <div class="ad-slot">Advertisement</div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <strong>Disclaimer:</strong> SignalEdge provides market analysis for educational purposes only.
+        Signals are generated by technical indicators (RSI, Moving Averages) and do <strong>not</strong>
+        constitute financial advice. Cryptocurrency and forex trading involves significant risk of loss.
+        Never invest money you cannot afford to lose. Past signal performance does not guarantee future results.
+        Always do your own research before making any trade.
+    </div>
+
+</div><!-- /container -->
+
+<footer>
+    © 2026 SignalEdge &nbsp;·&nbsp; Data: CoinGecko API &amp; Frankfurter API &nbsp;·&nbsp; Signals refresh every 5 minutes
+</footer>
+
+<!-- Auto-refresh every 5 minutes -->
+<script>
+    setTimeout(function() { location.reload(); }, 300000);
+</script>
+
+</body>
+</html>
