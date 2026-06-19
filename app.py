@@ -86,31 +86,36 @@ def forex_signal(pct_change_7d, pair):
 # ── Data Fetching ───────────────────────────────────────────────────────────
 
 def fetch_crypto():
-    """Fetch BTC, ETH, BNB, SOL via Binance public API (free, no key, high rate limits)."""
-    symbols = {
-        "BTCUSDT": "BTC/USD",
-        "ETHUSDT": "ETH/USD",
-        "BNBUSDT": "BNB/USD",
-        "SOLUSDT": "SOL/USD",
+    """Fetch BTC, ETH, BNB, SOL via CoinCap API (free, no key, works from US servers)."""
+    coins = {
+        "bitcoin":      "BTC/USD",
+        "ethereum":     "ETH/USD",
+        "binance-coin": "BNB/USD",
+        "solana":       "SOL/USD",
     }
     results = {}
 
-    for symbol, label in symbols.items():
+    end_ms   = int(datetime.now().timestamp() * 1000)
+    start_ms = int((datetime.now() - timedelta(days=15)).timestamp() * 1000)
+
+    for coin_id, label in coins.items():
         try:
-            # Current price + 24h stats
-            t = requests.get(
-                f"https://api.binance.com/api/v3/ticker/24hr?symbol={symbol}",
+            # Current price + 24h change
+            r = requests.get(
+                f"https://api.coincap.io/v2/assets/{coin_id}",
                 timeout=10
             ).json()
-            price      = float(t["lastPrice"])
-            change_24h = round(float(t["priceChangePercent"]), 2)
+            d          = r["data"]
+            price      = float(d["priceUsd"])
+            change_24h = round(float(d["changePercent24Hr"]), 2)
 
             # 15-day daily closes
-            k = requests.get(
-                f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=1d&limit=15",
+            h = requests.get(
+                f"https://api.coincap.io/v2/assets/{coin_id}/history"
+                f"?interval=d1&start={start_ms}&end={end_ms}",
                 timeout=10
             ).json()
-            closes = [float(row[4]) for row in k]   # index 4 = daily close
+            closes = [float(p["priceUsd"]) for p in h.get("data", [])]
 
             signal, reason, confidence, color = crypto_signal(closes, price, change_24h)
 
@@ -122,7 +127,7 @@ def fetch_crypto():
                 "confidence": confidence,
                 "color":      color,
             }
-            time.sleep(0.2)
+            time.sleep(0.3)
 
         except Exception:
             results[label] = {
