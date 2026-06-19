@@ -86,33 +86,31 @@ def forex_signal(pct_change_7d, pair):
 # ── Data Fetching ───────────────────────────────────────────────────────────
 
 def fetch_crypto():
-    """Fetch BTC, ETH, BNB prices + 14-day history from CoinGecko (free, no key)."""
-    coins = [
-        ("bitcoin",      "BTC/USD"),
-        ("ethereum",     "ETH/USD"),
-        ("binancecoin",  "BNB/USD"),
-        ("solana",       "SOL/USD"),
-    ]
+    """Fetch BTC, ETH, BNB, SOL via Binance public API (free, no key, high rate limits)."""
+    symbols = {
+        "BTCUSDT": "BTC/USD",
+        "ETHUSDT": "ETH/USD",
+        "BNBUSDT": "BNB/USD",
+        "SOLUSDT": "SOL/USD",
+    }
     results = {}
 
-    for coin_id, label in coins:
+    for symbol, label in symbols.items():
         try:
-            # Current price + 24h change
-            p = requests.get(
-                f"https://api.coingecko.com/api/v3/simple/price"
-                f"?ids={coin_id}&vs_currencies=usd&include_24hr_change=true",
+            # Current price + 24h stats
+            t = requests.get(
+                f"https://api.binance.com/api/v3/ticker/24hr?symbol={symbol}",
                 timeout=10
             ).json()
-            price      = p[coin_id]["usd"]
-            change_24h = round(p[coin_id].get("usd_24h_change", 0), 2)
+            price      = float(t["lastPrice"])
+            change_24h = round(float(t["priceChangePercent"]), 2)
 
-            # 14-day daily closes
-            h = requests.get(
-                f"https://api.coingecko.com/api/v3/coins/{coin_id}"
-                f"/market_chart?vs_currency=usd&days=14&interval=daily",
+            # 15-day daily closes
+            k = requests.get(
+                f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=1d&limit=15",
                 timeout=10
             ).json()
-            closes = [row[1] for row in h.get("prices", [])]
+            closes = [float(row[4]) for row in k]   # index 4 = daily close
 
             signal, reason, confidence, color = crypto_signal(closes, price, change_24h)
 
@@ -124,7 +122,7 @@ def fetch_crypto():
                 "confidence": confidence,
                 "color":      color,
             }
-            time.sleep(0.6)   # be polite to free API
+            time.sleep(0.2)
 
         except Exception:
             results[label] = {
@@ -137,19 +135,19 @@ def fetch_crypto():
 
 
 def fetch_forex():
-    """Fetch EUR/USD, GBP/USD, USD/NGN from Frankfurter API (free, no key)."""
-    currencies = ["EUR", "GBP", "NGN"]
-    labels     = {"EUR": "EUR/USD", "GBP": "GBP/USD", "NGN": "USD/NGN"}
-    results    = {}
+    """
+    EUR/USD, GBP/USD — Frankfurter API (ECB data, free, no key).
+    USD/NGN          — fawazahmed0 currency API (free, no key, includes NGN + history).
+    """
+    results = {}
 
+    # ── EUR / GBP via Frankfurter ────────────────────────────────────────────
     try:
-        # Current rates
         current = requests.get(
             "https://api.frankfurter.app/latest?from=USD",
             timeout=10
         ).json().get("rates", {})
 
-        # 7-day history
         start = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
         end   = datetime.now().strftime("%Y-%m-%d")
         hist  = requests.get(
@@ -158,45 +156,60 @@ def fetch_forex():
         ).json().get("rates", {})
         dates = sorted(hist.keys())
 
-        for cur in currencies:
-            label        = labels[cur]
+        for cur, label in [("EUR", "EUR/USD"), ("GBP", "GBP/USD")]:
             current_rate = current.get(cur, 0)
-
-            # 7-day % change
             if len(dates) >= 2:
                 old_rate   = hist[dates[0]].get(cur, current_rate)
                 pct_change = ((current_rate - old_rate) / old_rate * 100) if old_rate else 0
             else:
                 pct_change = 0
-
-            # Display price
-            if cur == "NGN":
-                display = f"₦{current_rate:,.2f}"
-            elif cur in ("EUR", "GBP"):
-                rate    = 1 / current_rate if current_rate else 0
-                symbol  = "€" if cur == "EUR" else "£"
-                display = f"{symbol}{rate:.4f}"
-            else:
-                display = f"{current_rate:.4f}"
-
+            rate    = 1 / current_rate if current_rate else 0
+            symbol  = "€" if cur == "EUR" else "£"
+            display = f"{symbol}{rate:.4f}"
             signal, reason, confidence, color = forex_signal(round(pct_change, 2), label)
-
             results[label] = {
-                "price":      display,
-                "change_7d":  round(pct_change, 2),
-                "signal":     signal,
-                "reason":     reason,
-                "confidence": confidence,
-                "color":      color,
+                "price": display, "change_7d": round(pct_change, 2),
+                "signal": signal, "reason": reason,
+                "confidence": confidence, "color": color,
             }
 
     except Exception:
-        for cur in currencies:
-            results[labels[cur]] = {
+        for label in ("EUR/USD", "GBP/USD"):
+            results[label] = {
                 "price": "N/A", "change_7d": 0,
                 "signal": "NEUTRAL", "reason": "Data unavailable",
                 "confidence": 0, "color": "gray",
             }
+
+    # ── USD/NGN via fawazahmed0 (free CDN-hosted currency API) ───────────────
+    try:
+        cur_r   = requests.get(
+            "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json",
+            timeout=10
+        ).json()
+        ngn_now = cur_r["usd"].get("ngn", 0)
+
+        d7      = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
+        old_r   = requests.get(
+            f"https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@{d7}/v1/currencies/usd.json",
+            timeout=10
+        ).json()
+        ngn_old = old_r["usd"].get("ngn", ngn_now)
+
+        ngn_pct = round(((ngn_now - ngn_old) / ngn_old * 100) if ngn_old else 0, 2)
+        signal, reason, confidence, color = forex_signal(ngn_pct, "USD/NGN")
+        results["USD/NGN"] = {
+            "price": f"₦{ngn_now:,.2f}", "change_7d": ngn_pct,
+            "signal": signal, "reason": reason,
+            "confidence": confidence, "color": color,
+        }
+
+    except Exception:
+        results["USD/NGN"] = {
+            "price": "N/A", "change_7d": 0,
+            "signal": "NEUTRAL", "reason": "Data unavailable",
+            "confidence": 0, "color": "gray",
+        }
 
     return results
 
