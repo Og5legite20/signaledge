@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About — SignalEdge</title>
     <meta name="description" content="Learn about SignalEdge — a free, real-time crypto and forex signal platform built on RSI and Moving Average analysis.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23080c18'/%3E%3Cpolyline points='4,22 10,14 16,18 22,8 28,12' stroke='%233b82f6' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y7EF28CJNR"></script>
     <script>
@@ -32,7 +33,7 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .logo { font-size: 1.3rem; font-weight: 800; text-decoration: none; }
+        .logo { font-size: 1.3rem; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 8px; }
         .logo-signal { color: #fff; }
         .logo-edge   { color: #3b82f6; }
         .main-nav { display: flex; gap: 18px; flex-wrap: wrap; }
@@ -71,6 +72,34 @@
             margin: 28px 0;
         }
         .callout p { margin-bottom: 0; color: #64748b; }
+        /* ── Cookie Banner ── */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #0f1526;
+            border-top: 1px solid #1a2540;
+            padding: 14px 24px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            z-index: 1000;
+            flex-wrap: wrap;
+        }
+        .cookie-banner p { font-size: 0.78rem; color: #4a5878; margin: 0; flex: 1; min-width: 220px; }
+        .cookie-banner a { color: #3b82f6; }
+        .cookie-accept {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .cookie-accept:hover { background: #2563eb; }
         footer {
             text-align: center;
             padding: 20px;
@@ -86,6 +115,7 @@
 
 <header>
     <a class="logo" href="/">
+        <svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0"><polyline points="1,13 6,7 10,10 15,3 19,6" stroke="#3b82f6" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span class="logo-signal">Signal</span><span class="logo-edge">Edge</span>
     </a>
     <nav class="main-nav">
@@ -140,6 +170,21 @@
     <a href="/contact">Contact</a> &nbsp;·&nbsp;
     <a href="/privacy">Privacy Policy</a>
 </footer>
+
+<!-- Cookie Consent Banner -->
+<div class="cookie-banner" id="cookieBanner">
+    <p>We use cookies to serve ads and analyse traffic. By using SignalEdge you accept our <a href="/privacy">Privacy Policy</a>.</p>
+    <button class="cookie-accept" onclick="acceptCookies()">Accept</button>
+</div>
+<script>
+    if (!localStorage.getItem('cookieConsent')) {
+        document.getElementById('cookieBanner').style.display = 'flex';
+    }
+    function acceptCookies() {
+        localStorage.setItem('cookieConsent', '1');
+        document.getElementById('cookieBanner').style.display = 'none';
+    }
+</script>
 
 </body>
 </html>
