@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Education — SignalEdge</title>
+    <meta name="description" content="Free educational guides on RSI, Moving Averages, and volatility management for crypto and forex traders. Plain English, no jargon.">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y7EF28CJNR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Y7EF28CJNR');
+    </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7621852470505552" crossorigin="anonymous"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #080c18;
+            color: #dde4f0;
+            line-height: 1.7;
+        }
+        header {
+            background: #0f1526;
+            border-bottom: 1px solid #1a2540;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo { font-size: 1.3rem; font-weight: 800; text-decoration: none; }
+        .logo-signal { color: #fff; }
+        .logo-edge   { color: #3b82f6; }
+        .main-nav { display: flex; gap: 18px; flex-wrap: wrap; }
+        .main-nav a {
+            color: #4a5878;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+        .main-nav a:hover { color: #dde4f0; }
+        .container { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
+        h1 { font-size: 1.6rem; margin-bottom: 6px; color: #f1f5f9; }
+        .subtitle { font-size: 0.9rem; color: #4a5878; margin-bottom: 40px; }
+        .article {
+            background: #0f1526;
+            border: 1px solid #1a2540;
+            border-radius: 14px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
+        }
+        .article-date {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #4a5878;
+            margin-bottom: 10px;
+        }
+        .article h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .article .excerpt {
+            font-size: 0.84rem;
+            color: #64748b;
+            font-style: italic;
+            margin-bottom: 20px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #1a2540;
+        }
+        .article-content p {
+            font-size: 0.88rem;
+            color: #94a3b8;
+            margin-bottom: 14px;
+        }
+        .article-content p:last-child { margin-bottom: 0; }
+        .article-content strong { color: #dde4f0; }
+        a  { color: #3b82f6; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.7rem;
+            color: #1e2a45;
+            border-top: 1px solid #1a2540;
+        }
+        footer a { color: #1e2a45; text-decoration: none; }
+        footer a:hover { color: #4a5878; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a class="logo" href="/">
+        <span class="logo-signal">Signal</span><span class="logo-edge">Edge</span>
+    </a>
+    <nav class="main-nav">
+        <a href="/">Signals</a>
+        <a href="/education">Education</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h1>Market Education</h1>
+    <p class="subtitle">Plain-English guides to the indicators powering SignalEdge — no jargon, no paywalls.</p>
+
+    {% for article in articles %}
+    <div class="article">
+        <div class="article-date">{{ article.date }}</div>
+        <h2>{{ article.title }}</h2>
+        <p class="excerpt">{{ article.excerpt }}</p>
+        <div class="article-content">
+            {{ article.content | safe }}
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+<footer>
+    © 2026 SignalEdge &nbsp;·&nbsp;
+    <a href="/about">About</a> &nbsp;·&nbsp;
+    <a href="/contact">Contact</a> &nbsp;·&nbsp;
+    <a href="/privacy">Privacy Policy</a>
+</footer>
+
+</body>
+</html>

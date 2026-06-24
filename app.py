@@ -4,6 +4,7 @@ Free to host on Render.com. Data from CoinGecko + Frankfurter (no API keys neede
 """
 
 from flask import Flask, render_template, jsonify
+import json
 import requests
 from datetime import datetime, timedelta
 import time
@@ -233,7 +234,30 @@ def get_signals():
 def index():
     crypto, forex = get_signals()
     updated = datetime.now().strftime("%d %b %Y  %H:%M UTC")
-    return render_template("index.html", crypto=crypto, forex=forex, updated=updated)
+
+    btc        = crypto.get("BTC/USD", {})
+    btc_signal = btc.get("signal", "NEUTRAL")
+    btc_reason = btc.get("reason", "indicators are mixed")
+    btc_price  = btc.get("price", "N/A")
+    btc_change = btc.get("change_24h", 0)
+    direction  = ("upward" if btc_signal in ("BUY", "STRONG BUY")
+                  else "downward" if btc_signal in ("SELL", "STRONG SELL")
+                  else "sideways")
+    chg_str    = (f"up {abs(btc_change):.2f}%" if btc_change > 0
+                  else f"down {abs(btc_change):.2f}%" if btc_change < 0
+                  else "flat")
+    market_summary_text = (
+        f"Daily Briefing: Bitcoin ({btc_price}) is showing a {btc_signal} signal "
+        f"— {btc_reason}. BTC has moved {chg_str} over the past 24 hours, reflecting "
+        f"{direction} momentum. See the individual asset signals below, or visit the "
+        f"Education section to learn how RSI and Moving Averages drive each call."
+    )
+
+    return render_template(
+        "index.html",
+        crypto=crypto, forex=forex, updated=updated,
+        market_summary_text=market_summary_text
+    )
 
 
 @app.route("/ads.txt")
@@ -244,6 +268,23 @@ def ads_txt():
 @app.route("/privacy")
 def privacy():
     return render_template("privacy.html")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
+@app.route("/education")
+def education():
+    with open("articles.json", encoding="utf-8") as f:
+        articles = json.load(f)
+    return render_template("education.html", articles=articles)
 
 
 @app.route("/api/signals")

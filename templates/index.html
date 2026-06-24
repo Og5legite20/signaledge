@@ -79,18 +79,28 @@
             padding: 24px 16px 48px;
         }
 
-        /* ── Ad Slot ── */
-        .ad-slot {
-            background: var(--surface);
-            border: 1px dashed var(--border);
-            border-radius: 10px;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* ── Nav ── */
+        .main-nav { display: flex; gap: 18px; align-items: center; }
+        .main-nav a {
             color: var(--muted);
-            font-size: 0.72rem;
-            margin: 20px 0;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+        .main-nav a:hover { color: var(--text); }
+
+        /* ── Market Summary ── */
+        .market-summary {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-size: 0.82rem;
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 8px;
         }
 
         /* ── Section header ── */
@@ -219,6 +229,7 @@
         @media (max-width: 520px) {
             .grid { grid-template-columns: 1fr; }
             header { flex-direction: column; align-items: flex-start; gap: 6px; }
+            .main-nav { flex-wrap: wrap; gap: 10px; }
             .updated { text-align: left; }
         }
     </style>
@@ -233,6 +244,12 @@
         </div>
         <div class="tagline">Live Crypto &amp; Forex Trading Signals — Free</div>
     </div>
+    <nav class="main-nav">
+        <a href="/">Signals</a>
+        <a href="/education">Education</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+    </nav>
     <div class="updated">
         <span class="live-dot"></span>
         Last updated<br>{{ updated }}
@@ -241,8 +258,8 @@
 
 <div class="container">
 
-    <!-- Ad Slot Top -->
-    <div class="ad-slot">Advertisement</div>
+    <!-- Daily Market Briefing -->
+    <div class="market-summary">{{ market_summary_text }}</div>
 
     <!-- ═══ CRYPTO SIGNALS ═══ -->
     <div class="section-label">Cryptocurrency Signals</div>
@@ -268,9 +285,6 @@
         {% endfor %}
     </div>
 
-    <!-- Ad Slot Middle -->
-    <div class="ad-slot">Advertisement</div>
-
     <!-- ═══ FOREX SIGNALS ═══ -->
     <div class="section-label">Forex Signals</div>
     <div class="grid">
@@ -295,9 +309,6 @@
         {% endfor %}
     </div>
 
-    <!-- Ad Slot Bottom -->
-    <div class="ad-slot">Advertisement</div>
-
     <!-- Disclaimer -->
     <div class="disclaimer">
         <strong>Disclaimer:</strong> SignalEdge provides market analysis for educational purposes only.
@@ -310,7 +321,10 @@
 </div><!-- /container -->
 
 <footer>
-    © 2026 SignalEdge &nbsp;·&nbsp; Data: Yahoo Finance &amp; Frankfurter API &nbsp;·&nbsp; Signals refresh every 5 minutes &nbsp;·&nbsp; <a href="/privacy" style="color:#1e2a45;text-decoration:none;">Privacy Policy</a>
+    © 2026 SignalEdge &nbsp;·&nbsp; Data: Yahoo Finance &amp; Frankfurter API &nbsp;·&nbsp; Signals refresh every 5 min &nbsp;·&nbsp;
+    <a href="/about" style="color:#1e2a45;text-decoration:none;">About</a> &nbsp;·&nbsp;
+    <a href="/contact" style="color:#1e2a45;text-decoration:none;">Contact</a> &nbsp;·&nbsp;
+    <a href="/privacy" style="color:#1e2a45;text-decoration:none;">Privacy Policy</a>
 </footer>
 
 <!-- Auto-refresh every 5 minutes -->
