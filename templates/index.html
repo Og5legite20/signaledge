@@ -204,6 +204,48 @@
             margin-top: 5px;
         }
 
+        /* ── Homepage Content ── */
+        .content-section { margin-top: 44px; }
+        .content-section h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin: 30px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .content-section h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin: 20px 0 6px;
+        }
+        .content-section p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 14px;
+            line-height: 1.75;
+        }
+        .content-section ul { margin: 0 0 16px 22px; }
+        .content-section li {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            line-height: 1.7;
+        }
+        .content-section strong { color: #dde4f0; }
+        .content-section a { color: var(--accent); text-decoration: none; }
+        .content-section a:hover { text-decoration: underline; }
+        .faq-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+        }
+        .faq-item h3 { margin: 0 0 8px; color: #f1f5f9; font-size: 0.92rem; }
+        .faq-item p  { margin: 0; font-size: 0.86rem; }
+
         /* ── Disclaimer ── */
         .disclaimer {
             background: var(--surface);
@@ -339,6 +381,67 @@
             <div class="bar-label">Confidence: {{ d.confidence }}%</div>
         </div>
         {% endfor %}
+    </div>
+
+    <!-- ═══ EXPLANATORY CONTENT ═══ -->
+    <div class="content-section">
+        <h2>How to Read a SignalEdge Signal</h2>
+        <p>Every card above condenses several technical calculations into a single, plain-English call. Understanding what each part means will help you use the signals as one input in your own decision-making process rather than treating them as instructions.</p>
+
+        <h3>The signal badge</h3>
+        <p>Each asset is assigned one of five directional states based on how strongly the underlying indicators agree:</p>
+        <ul>
+            <li><strong>STRONG BUY</strong> — Momentum and trend both point sharply upward. On our scale this fires when RSI is deeply oversold <em>and</em> the price is already recovering above its 7-day moving average.</li>
+            <li><strong>BUY</strong> — Conditions favour the upside, but with less conviction than a strong buy. Typically a low RSI confirmed by a rising moving-average trend.</li>
+            <li><strong>NEUTRAL</strong> — Indicators disagree or the market is range-bound. There is no clear statistical edge in either direction, and the historically correct move is often to wait.</li>
+            <li><strong>SELL</strong> — Momentum is fading and the trend is turning down. A signal to consider reducing exposure, not necessarily to short.</li>
+            <li><strong>STRONG SELL</strong> — RSI is overbought while price has broken below its short-term average — a combination that has historically preceded pullbacks.</li>
+        </ul>
+
+        <h3>The confidence bar</h3>
+        <p>The percentage beneath each signal reflects how many of our indicators align in the same direction, not a probability of profit. A confidence of 84% means the technical picture is strongly one-sided; a reading near 50% means the evidence is genuinely mixed. No confidence score, however high, removes the risk inherent in trading volatile assets.</p>
+
+        <h3>The reasoning line</h3>
+        <p>Directly under each signal we print the specific condition that triggered it — for example, <em>“RSI oversold at 28 + price above 7-day MA.”</em> This transparency is deliberate: you should always be able to see exactly <em>why</em> a call was made, and judge for yourself whether that logic fits the wider market context.</p>
+
+        <h2>The Markets We Track</h2>
+        <p>SignalEdge covers a deliberately focused set of markets so that each one can be monitored closely rather than spreading attention thin across hundreds of tickers.</p>
+        <ul>
+            <li><strong>Bitcoin (BTC), Ethereum (ETH), BNB and Solana (SOL)</strong> — the four most liquid cryptocurrencies, chosen because deep liquidity makes technical indicators more reliable and less prone to manipulation than thinly-traded altcoins.</li>
+            <li><strong>EUR/USD and GBP/USD</strong> — the two most heavily traded forex pairs in the world, driven by European Central Bank and Bank of England policy against the US dollar.</li>
+            <li><strong>USD/NGN</strong> — the US dollar against the Nigerian naira, tracked specifically for our West African readers and sensitive to central-bank intervention and oil-price movements.</li>
+        </ul>
+
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <h3>Are SignalEdge signals financial advice?</h3>
+            <p>No. Every signal is a mathematical reading of public price data, provided for educational and informational purposes only. Nothing on this site is personalised financial advice. Always do your own research and, where appropriate, consult a licensed financial advisor before trading.</p>
+        </div>
+        <div class="faq-item">
+            <h3>How often do the signals update?</h3>
+            <p>All signals refresh automatically every five minutes using the latest available market data. The timestamp in the header shows when the current readings were generated, and the page reloads on its own so you always see fresh calls.</p>
+        </div>
+        <div class="faq-item">
+            <h3>What does the confidence percentage actually measure?</h3>
+            <p>It measures how strongly our indicators agree with one another — not the odds of a trade being profitable. A high number means RSI and the moving averages are pointing the same way; it is a measure of technical alignment, not a guarantee.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Can I act on a STRONG BUY signal by itself?</h3>
+            <p>We strongly recommend against it. A single indicator reading should be combined with your own analysis of market structure, news, position sizing and risk tolerance. Treat our signals as a fast second opinion, never as a standalone trigger to commit capital.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Why did a signal change from BUY to NEUTRAL?</h3>
+            <p>Because the market moved. As new price data arrives every five minutes, the RSI and moving-average calculations shift with it. A signal changing is normal and healthy — it means the model is responding to real conditions rather than staying static.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Is SignalEdge really free?</h3>
+            <p>Yes, completely. There is no account, no subscription and no paywall. The platform is supported by advertising, which lets us keep every feature free for everyone, worldwide. You can read more about our approach on the <a href="/about">About</a> page.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Where can I learn how the indicators work?</h3>
+            <p>Our <a href="/education">Education</a> section breaks down RSI, moving averages, the golden cross and volatility management in plain English — no prior trading experience required.</p>
+        </div>
     </div>
 
     <!-- Disclaimer -->
