@@ -270,6 +270,16 @@ def privacy():
     return render_template("privacy.html")
 
 
+@app.route("/terms")
+def terms():
+    return render_template("terms.html")
+
+
+@app.route("/glossary")
+def glossary():
+    return render_template("glossary.html")
+
+
 @app.route("/about")
 def about():
     return render_template("about.html")
