@@ -125,12 +125,15 @@
         }
 
         .card {
+            display: block;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 18px 20px;
             transition: transform 0.15s, border-color 0.15s;
-            cursor: default;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
         }
         .card:hover {
             transform: translateY(-3px);
@@ -202,6 +205,14 @@
             font-size: 0.65rem;
             color: var(--muted);
             margin-top: 5px;
+        }
+        .trade-cta {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--accent);
         }
 
         /* ── Homepage Content ── */
@@ -340,7 +351,7 @@
     <div class="section-label">Cryptocurrency Signals</div>
     <div class="grid">
         {% for pair, d in crypto.items() %}
-        <div class="card {{ d.color }}">
+        <a class="card {{ d.color }}" href="https://www.binance.com/en/trade/{{ pair.split('/')[0] }}_USDT" target="_blank" rel="noopener">
             <div class="card-header">
                 <div>
                     <div class="pair">{{ pair }}</div>
@@ -356,7 +367,8 @@
                 <div class="bar-fill {{ d.color }}" style="width: {{ d.confidence }}%"></div>
             </div>
             <div class="bar-label">Confidence: {{ d.confidence }}%</div>
-        </div>
+            <div class="trade-cta">Trade {{ pair.split('/')[0] }} on Binance &rarr;</div>
+        </a>
         {% endfor %}
     </div>
 
@@ -364,7 +376,7 @@
     <div class="section-label">Forex Signals</div>
     <div class="grid">
         {% for pair, d in forex.items() %}
-        <div class="card {{ d.color }}">
+        <a class="card {{ d.color }}" href="https://www.exness.com" target="_blank" rel="noopener">
             <div class="card-header">
                 <div>
                     <div class="pair">{{ pair }}</div>
@@ -380,7 +392,8 @@
                 <div class="bar-fill {{ d.color }}" style="width: {{ d.confidence }}%"></div>
             </div>
             <div class="bar-label">Confidence: {{ d.confidence }}%</div>
-        </div>
+            <div class="trade-cta">Trade {{ pair }} on Exness &rarr;</div>
+        </a>
         {% endfor %}
     </div>
 
